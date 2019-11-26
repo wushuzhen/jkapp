@@ -1,0 +1,42 @@
+vue 
+选择 babel
+选择 vue-router
+选择 vuex 
+选择 css -> less
+选择 eslint -> prevent error only
+选择 配置单独文件保存
+
+创建项目
+
+安装运行依赖
+vant（UI库）
+amfe-flexible(支持rem适配)
+cordova(app开发，cordova命令行支持)
+
+安装开发依赖
+postcss-pxtorem(支持rem适配)
+axios（http库） 
+
+安装插件
+vue-cli-plugin-axios（需要修改插件axios.js支持loading）
+vue-cli-plugin-cordova（命令行安装）
+$ npm install -g cordova （如果没安装cordova）
+
+编辑.eslintrc.js，去除变量未使用的报错
+rules中加入
+   "no-unused-vars":"off",	  
+
+$ vue add cordova
+
+rem适配：
+postcss.config.js 加入
+    'postcss-pxtorem': {
+        rootValue:37.5,
+        propList: ['*']	
+	}
+	
+axios加入loading等支持	
+使用修改的axios，router加入支持
+
+vscode设置目录排除**/node_modules
+设置Text Editor->Files->Exclude添加**/node_modules
