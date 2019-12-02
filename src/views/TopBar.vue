@@ -1,22 +1,22 @@
 <template>
   <div>
     <van-nav-bar
-        title="title"
-        left-text="返回"
-        right-text="按钮"
-        left-arrow
-        @click-left="onClickLeft"
-        @click-right="onClickRight"
+      title="标题"
+      left-text="返回"
+      right-text="按钮"
+      left-arrow
+      @click-left="onClickLeft"
+      @click-right="onClickRight"
     />
   </div>
 </template>
 
 <script>
-import { Toast, NavBar } from 'vant'
+import { Toast, NavBar } from "vant";
 export default {
-  name: 'top-bar',
+  name: "top-bar",
   components: {
-    [NavBar.name]: NavBar,
+    [NavBar.name]: NavBar
   },
 
   data() {
@@ -30,10 +30,10 @@ export default {
       this.$router.go(-1);
     },
     onClickRight() {
-      Toast('按钮');
+      Toast("按钮");
     }
-  }  
-}
+  }
+};
 </script>
 
 <style scoped lang="less">

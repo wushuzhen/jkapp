@@ -2,6 +2,7 @@
   <div class="admin">
     <van-cell-group class="menu-title" title="管理员功能">
       <van-cell title="管理员信息" to="/adminUserInfo" is-link/>
+      <van-cell title="保健用户管理" to="/healthmanger" is-link/>
     </van-cell-group>
     <van-cell-group class="menu-title" :title="currUser">
       <van-cell-group title="健康管理">
@@ -32,7 +33,7 @@ export default {
 
   computed: {
     currUser(){ 
-      return "当前保健用户 : " + this.$store.state.healthUser
+      return "当前保健用户" + this.$store.state.healthUser
     }
   }
 }
