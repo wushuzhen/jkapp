@@ -1,5 +1,6 @@
 import Vue from "vue";
 import "./plugins/axios";
+import "./plugins/bluetooth";
 import "amfe-flexible";
 import utils from "./common/utils";
 import App from "./App.vue";
@@ -26,3 +27,9 @@ new Vue({
   store,
   render: h => h(App)
 }).$mount("#app");
+
+document.addEventListener("deviceready", onDeviceReady, false);
+function onDeviceReady() {
+  console.log("deviceready");
+  store.commit("setDeviceReady", true);
+}

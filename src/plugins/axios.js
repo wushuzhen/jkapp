@@ -7,7 +7,7 @@ import qs from "qs";
 
 // Full config:  https://github.com/axios/axios#request-config
 let baseUrl =
-  process.env.NODE_ENV === "production" ? "http://192.168.31.150:8000" : "/api";
+  process.env.NODE_ENV === "production" ? "https://192.168.31.150:8000" : "/api";
 // axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
 // axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';

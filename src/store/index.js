@@ -8,11 +8,15 @@ const CancelToken = axios.CancelToken;
 
 export default new Vuex.Store({
   state: {
+    deviceready: false,
     source: CancelToken.source(),
     currUser: 0,
     userList: []
   },
   mutations: {
+    setDeviceReady(state, arg) {
+      state.deviceready = arg;
+    },
     setSource(state, arg) {
       // 路由切换新建新建取消令牌，并写入store
       state.source = arg;
