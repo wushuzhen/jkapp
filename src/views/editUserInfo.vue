@@ -1,6 +1,6 @@
 <template>
   <div class="userinfo">
-    <top-bar v-show="true" />
+    <top-bar v-show="true" ref="son" />
     <van-cell-group>
       <van-field v-model="username" label="用户名 : " />
       <van-field label="性别 : " readonly="readonly" />
@@ -113,6 +113,9 @@ export default {
       console.log(111111111);
       console.log(obj);
     }
+  },
+  mounted:function(){
+    this.$refs.son.title = "修改管理员资料"
   }
 };
 </script>

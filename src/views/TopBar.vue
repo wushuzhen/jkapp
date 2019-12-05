@@ -1,7 +1,7 @@
 <template>
   <div>
     <van-nav-bar
-      title="标题"
+      :title="title"
       left-text="返回"
       right-text="按钮"
       left-arrow
@@ -18,11 +18,10 @@ export default {
   components: {
     [NavBar.name]: NavBar
   },
-
   data() {
     return {
-      title:"标题"
-    }
+      title: "标题"
+    };
   },
 
   methods: {
@@ -36,5 +35,4 @@ export default {
 };
 </script>
 
-<style scoped lang="less">
-</style>
+<style scoped lang="less"></style>

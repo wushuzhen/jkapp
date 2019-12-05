@@ -1,10 +1,17 @@
 <template>
-  <div class="editphone">
+  <div class="datatransfer">
     <top-bar v-show="true" ref="son" />
     <van-cell-group>
-      <van-field v-model="phone" placeholder="请输入手机号码" />
+      <van-field v-model="phone" placeholder="请填写数据授权对象手机号码" />
       <van-field v-model="code" placeholder="请输入验证码" />
-      <van-button plain type="primary" size="normal" @click="getcode" class="code">获取验证码</van-button>
+      <van-button
+        plain
+        type="primary"
+        size="normal"
+        @click="getcode"
+        class="code"
+        >获取验证码</van-button
+      >
       <van-button plain type="primary" size="small" @click="submit"
         >提交</van-button
       >
@@ -27,29 +34,29 @@ export default {
       phone: "",
       code: ""
     };
-	},
-	methods: {
-		getcode(){
-			console.log(11111111)
-		},
-		submit(){
-			console.log(22222222);
-			let id = localStorage.getItem("currUser");
-			console.log(id)
-		}
+  },
+  methods: {
+    getcode() {
+      console.log(11111111);
+    },
+    submit() {
+      console.log(22222222);
+      let id = localStorage.getItem("currUser");
+      console.log(id);
+    }
   },
   mounted:function(){
-    this.$refs.son.title = "修改手机号"
+    this.$refs.son.title = "数据授权";
   }
 };
 </script>
 <style lang="less" scoped>
-.editphone {
-	position: relative;
-	.code{
-		position: absolute;
-		right: 0px;
-		top: 44px
-	}
+.datatransfer {
+  position: relative;
+  .code {
+    position: absolute;
+    right: 0px;
+    top: 44px;
+  }
 }
 </style>

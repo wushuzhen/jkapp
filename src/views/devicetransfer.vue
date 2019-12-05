@@ -1,8 +1,8 @@
 <template>
-  <div class="editphone">
+  <div class="devicetransfer">
     <top-bar v-show="true" ref="son" />
     <van-cell-group>
-      <van-field v-model="phone" placeholder="请输入手机号码" />
+      <van-field v-model="phone" placeholder="请填写设备授权对象手机号码" />
       <van-field v-model="code" placeholder="请输入验证码" />
       <van-button plain type="primary" size="normal" @click="getcode" class="code">获取验证码</van-button>
       <van-button plain type="primary" size="small" @click="submit"
@@ -39,12 +39,12 @@ export default {
 		}
   },
   mounted:function(){
-    this.$refs.son.title = "修改手机号"
+    this.$refs.son.title = "设备授权";
   }
 };
 </script>
 <style lang="less" scoped>
-.editphone {
+.devicetransfer {
 	position: relative;
 	.code{
 		position: absolute;

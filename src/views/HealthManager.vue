@@ -1,35 +1,42 @@
 <template>
   <div class="healthmanager">
-    <top-bar v-show="true" />
-    <h1>保健用户</h1>
+    <top-bar v-show="true" ref="son" />
     <van-cell-group v-for="item of usergroup" :key="item.id">
-      <van-field :value="item.name" label="使用者名称 : " />
-      <van-field :value="item.phone" label="关联手机号 : " />
-      <van-field :value="item.bindtime" label="绑定时间 : " />
-      <van-field :value="item.equiptment" label="关联设备 : " />
-      <van-field v-if="item.status == 0" value="初始化" label="设备状态 : " />
+      <van-field :value="item.name" disabled label="使用者名称 : " />
+      <van-field :value="item.phone" disabled label="关联手机号 : " />
+      <van-field :value="item.bindtime" disabled label="绑定时间 : " />
+      <van-field :value="item.equiptment" disabled label="关联设备 : " />
+      <van-field
+        v-if="item.status == 0"
+        disabled
+        value="初始化"
+        label="设备状态 : "
+      />
       <van-field
         v-else-if="item.status == 1"
         value="已激活"
+        disabled
         label="设备状态 : "
       />
       <van-field
         v-else-if="item.status == 2"
         value="已挂失"
+        disabled
         label="设备状态 : "
       />
       <van-field
         v-else-if="item.status == 3"
         value="已解绑"
+        disabled
         label="设备状态 : "
       />
-      <van-field v-else value="禁用" label="设备状态 : " />
+      <van-field v-else value="禁用" disabled label="设备状态 : " />
       <van-button
         v-if="item.ismanage == 1"
         plain
         type="primary"
         size="small"
-        @click="edit"
+        :to="{ path: '/editdeviceuser', query: { id: item.id } }"
         >修改</van-button
       >
       <van-button
@@ -37,7 +44,7 @@
         plain
         type="primary"
         size="small"
-        @click="bind"
+        :to="{ path: '/binddevice', query: { id: item.id } }"
         >绑定</van-button
       >
       <van-button
@@ -45,7 +52,7 @@
         plain
         type="primary"
         size="small"
-        @click="unbind"
+        @click="unbind(item.id)"
         >解除绑定</van-button
       >
       <van-button
@@ -53,7 +60,7 @@
         plain
         type="primary"
         size="small"
-        @click="reportloss"
+        @click="reportloss(item.id)"
         >挂失</van-button
       >
       <van-button
@@ -61,7 +68,7 @@
         plain
         type="primary"
         size="small"
-        @click="devicetransfer"
+        :to="{ path: '/devicetransfer', query: { id: item.id } }"
         >设备授权</van-button
       >
       <van-button
@@ -69,7 +76,7 @@
         plain
         type="primary"
         size="small"
-        @click="datatransfer"
+        :to="{ path: '/datatransfer', query: { id: item.id } }"
         >数据授权</van-button
       >
       <van-button
@@ -104,7 +111,7 @@ export default {
           bindtime: "2019-4-5",
           equiptment: "12",
           issurvey: 0,
-          status: 4,
+          status: 2,
           ismanage: 1
         },
         {
@@ -121,13 +128,20 @@ export default {
     };
   },
   methods: {
-    edit() {},
-    bind() {},
-    unbind() {},
-    reportloss() {},
+    unbind(id) {
+      this.usergroup[0].status = 1
+      console.log(this)
+      console.log(id)
+    },
+    reportloss(id) {
+      console.log(id)
+    },
     devicetransfer() {},
     datatransfer() {},
     pcsurvey() {}
+  },
+  mounted:function(){
+    this.$refs.son.title = "保健用户列表"
   }
 };
 </script>

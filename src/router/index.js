@@ -63,6 +63,22 @@ const routes = [
   {
     path: '/editPhone',
     component: () => import('../views/editPhone.vue')
+  },
+  {
+    path: "/editdeviceuser",
+    component: () => import("../views/editdeviceuser.vue")
+  },
+  {
+    path: "/binddevice",
+    component: () => import("../views/binddevice.vue")
+  },
+  {
+    path: "/devicetransfer",
+    component: () => import("../views/devicetransfer.vue")
+  },
+  {
+    path: "/datatransfer",
+    component: () => import("../views/datatransfer.vue")
   }
 ];
 

@@ -1,6 +1,6 @@
 <template>
   <div class="editpassword">
-    <top-bar v-show="true" />
+    <top-bar v-show="true" ref="son" />
     <van-cell-group>
       <van-field v-model="oldpw" placeholder="请输入原密码" type="password" />
       <van-field v-model="newpw" placeholder="请输入新密码" type="password" />
@@ -42,6 +42,9 @@ export default {
       console.log(11111111);
       console.log(obj);
     }
+  },
+  mounted:function(){
+    this.$refs.son.title = "修改密码"
   }
 };
 </script>
