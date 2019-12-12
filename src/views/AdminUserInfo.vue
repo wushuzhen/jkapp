@@ -1,6 +1,6 @@
 <template>
   <div>
-    <top-bar v-show="true" ref="son"/>
+    <top-bar title ="管理员信息"/>
     <van-cell-group>
       <van-cell title="修改资料" to="/editUserInfo" is-link />
       <van-cell title="修改密码" to="/editPassword" is-link />
@@ -17,9 +17,6 @@ export default {
     [CellGroup.name]: CellGroup,
     [Cell.name]: Cell,
     [TopBar.name]: TopBar
-  },
-  mounted:function(){
-    this.$refs.son.title = "管理员信息";
   }
 };
 </script>

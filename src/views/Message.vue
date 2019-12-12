@@ -4,10 +4,13 @@
     <van-button type="primary" size="large" @click="recvData">上传数据</van-button>
     <van-button type="primary" size="large" @click="resetDevice">断开连接</van-button>
     <p>deviceListStr</p>
+    <van-button type="primary" size="large" @click="qrscan">扫描二维码</van-button>
+    <p>{{$store.state.qrcode}}</p>
   </div>
 </template>
 
 <script>
+/* global ble */
 import { Button } from "vant";
 export default {
   components: {
@@ -17,7 +20,7 @@ export default {
   data() {
     return {
       deviceList: null,
-      deviceListStr: ""
+      deviceListStr: "",
     };
   },
 
@@ -44,6 +47,10 @@ export default {
         .catch(function() {
           console.log("bluetooth reset failure");
         });
+    },
+
+    qrscan: function() {
+      this.$router.push({ path: "/qrscan" });
     },
 
     onScanComplete: function(deviceList) {

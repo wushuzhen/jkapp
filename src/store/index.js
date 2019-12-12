@@ -11,9 +11,15 @@ export default new Vuex.Store({
     deviceready: false,
     source: CancelToken.source(),
     currUser: 0,
-    userList: []
+    userList: [],
+    bottombar: false, //是否显示底部按钮条
+    qrcode:"",
+    contactRefresh:false //是否刷新联系人列表
   },
   mutations: {
+    setBottombar(state, arg) {
+      state.bottombar = arg;
+    },
     setDeviceReady(state, arg) {
       state.deviceready = arg;
     },
@@ -32,6 +38,12 @@ export default new Vuex.Store({
     },
     setUserList(state, arg) {
       state.userList = arg;
+    },
+    setQrcode(state, arg){
+      state.qrcode = arg;
+    },
+    setContactRefresh(state, arg){
+      state.contactRefresh = arg;
     }
   },
   actions: {},

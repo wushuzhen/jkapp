@@ -51,7 +51,7 @@ export default {
               let redirect = response.data.redirect;
               if (redirect != undefined) {
                 //如果跳转则跳转
-                this.$router.push({ path: redirect });
+                this.$router.replace({ path: redirect });
               }
             } else if (retcode == 1) {
               this.$toast(response.retmsg);

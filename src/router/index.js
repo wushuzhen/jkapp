@@ -54,31 +54,69 @@ const routes = [
   },
   {
     path: "/editUserInfo",
-    component: () => import("../views/editUserInfo.vue")
+    component: () => import("../views/EditUserInfo.vue")
   },
   {
-    path: '/editPassword',
-    component: () => import('../views/editPassword.vue')
+    path: "/editPassword",
+    component: () => import("../views/EditPassword.vue")
   },
   {
-    path: '/editPhone',
-    component: () => import('../views/editPhone.vue')
+    path: "/editPhone",
+    component: () => import("../views/EditPhone.vue")
+  },
+  {
+    path: "/qrscan",
+    component: () => import("../views/QrScan.vue"),
+    meta: { requireAuth: false }
   },
   {
     path: "/editdeviceuser",
-    component: () => import("../views/editdeviceuser.vue")
+    component: () => import("../views/Editdeviceuser.vue")
   },
   {
     path: "/binddevice",
-    component: () => import("../views/binddevice.vue")
+    component: () => import("../views/Binddevice.vue")
   },
   {
     path: "/devicetransfer",
-    component: () => import("../views/devicetransfer.vue")
+    component: () => import("../views/Devicetransfer.vue")
   },
   {
     path: "/datatransfer",
-    component: () => import("../views/datatransfer.vue")
+    component: () => import("../views/Datatransfer.vue")
+  },
+  {
+    path: "/healthinfo",
+    component: () => import("../views/Healthinfo.vue")
+  },
+  {
+    path: "/heartRate",
+    component: () => import("../views/Heartrate.vue")
+  },
+  {
+    path: "/bloodPressure",
+    component: () => import("../views/HeartPressure.vue")
+  },
+  {
+    path: "/bloodSugar",
+    component: () => import("../views/BloodSugar.vue")
+  },
+  {
+    path: "/healthwarn",
+    component: () => import("../views/Healthwarn.vue")
+  },
+  {
+    path: "/plane",
+    component: () => import("../views/Plane.vue")
+  },
+  {
+    path: "/contact",
+    component: () => import("../views/ContactList.vue"),
+    meta: { keepAlive: true }
+  },
+  {
+    path: "/contactInfo",
+    component: () => import("../views/ContactInfo.vue")
   }
 ];
 
@@ -90,11 +128,14 @@ router.beforeEach((to, from, next) => {
   let requireAuth = true;
   if (to.meta.requireAuth != undefined) requireAuth = to.meta.requireAuth;
 
+  if (to.meta.keepAlive == undefined) to.meta.keepAlive = false;
+
   console.log(
-    "router.beforeEach to:{0} from:{1} requireAuth:{2}".format(
+    "router.beforeEach to:{0} from:{1} requireAuth:{2} keepAlive:{3}".format(
       to.path,
       from.path,
-      requireAuth
+      requireAuth,
+      to.meta.keepAlive
     )
   );
   if (requireAuth) {

@@ -1,6 +1,6 @@
 <template>
   <div class="devicetransfer">
-    <top-bar v-show="true" ref="son" />
+    <top-bar title="设备授权" />
     <van-cell-group>
       <van-field v-model="phone" placeholder="请填写设备授权对象手机号码" />
       <van-field v-model="code" placeholder="请输入验证码" />
@@ -37,9 +37,6 @@ export default {
 			let id = localStorage.getItem("currUser");
 			console.log(id)
 		}
-  },
-  mounted:function(){
-    this.$refs.son.title = "设备授权";
   }
 };
 </script>

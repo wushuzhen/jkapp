@@ -1,6 +1,6 @@
 <template>
   <div class="editpassword">
-    <top-bar v-show="true" ref="son" />
+    <top-bar title="修改密码" />
     <van-cell-group>
       <van-field v-model="oldpw" placeholder="请输入原密码" type="password" />
       <van-field v-model="newpw" placeholder="请输入新密码" type="password" />
@@ -30,21 +30,51 @@ export default {
     return {
       oldpw: "",
       newpw: "",
-      confirmpw: ""
+      confirmpw: "",
+      msg: ""
     };
   },
   methods: {
     submit() {
-      var obj = {};
-      obj.oldpw = this.oldpw;
-      obj.newpw = this.newpw;
-      obj.confirmpw = this.confirmpw;
-      console.log(11111111);
-      console.log(obj);
+      if (this.newpw == this.confirmpw) {
+        let that = this;
+        this.getCsrfToken(this).then(function(token) {
+          that.submitpd(token);
+        });
+      } else {
+        this.$dialog.alert({
+          message: "新密码前后不一致，请重新确认！"
+        });
+      }
+    },
+    submitpd(token) {
+      this.$axios
+        .post(
+          "/changepassword/",
+          {
+            old_psd: this.oldpw,
+            new_psd: this.newpw,
+            re_psd: this.confirmpw
+          },
+          { headers: { "X-CSRFToken": token } }
+        )
+        .then(function(res) {
+          if (res.retcode === 0) {
+            this.$dialog.alert({
+              message: res.retmsg
+            });
+          } else if (res.retcode === 1) {
+            this.$dialog.alert({
+              message: res.retmsg
+            });
+            this.$router.push({ path:res.redirect })
+          } else {
+            this.$dialog.alert({
+              message: res.retmsg
+            });
+          }
+        });
     }
-  },
-  mounted:function(){
-    this.$refs.son.title = "修改密码"
   }
 };
 </script>

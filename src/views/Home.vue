@@ -15,6 +15,7 @@ export default {
   },
 
   mounted() {
+    this.$store.commit("setBottombar", true);
     this.httpSelect(null);
   },
 
@@ -50,7 +51,7 @@ export default {
               let redirect = response.redirect;
               if (redirect != undefined) {
                 //如果跳转则跳转
-                this.$router.push({ path: redirect });
+                this.$router.replace({ path: redirect });
               } else {
                 this.number = response.data.number;
                 this.list_userid = response.data.list_userid;
@@ -88,9 +89,11 @@ export default {
             }
           }.bind(this)
         )
-        .catch(function(error) {
-          console.log("请求失败" + error);
-        });
+        .catch(
+          function(error) {
+            this.$store.commit("setBottombar", true);
+          }.bind(this)
+        );
     }
   }
 };

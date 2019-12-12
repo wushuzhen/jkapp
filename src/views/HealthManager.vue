@@ -1,36 +1,36 @@
 <template>
   <div class="healthmanager">
-    <top-bar v-show="true" ref="son" />
+    <top-bar title="保健用户列表" />
     <van-cell-group v-for="item of usergroup" :key="item.id">
-      <van-field :value="item.name" disabled label="使用者名称 : " />
-      <van-field :value="item.phone" disabled label="关联手机号 : " />
-      <van-field :value="item.bindtime" disabled label="绑定时间 : " />
-      <van-field :value="item.equiptment" disabled label="关联设备 : " />
+      <van-field :value="item.name" readonly label="使用者名称 : " />
+      <van-field :value="item.phone" readonly label="关联手机号 : " />
+      <van-field :value="item.bindtime" readonly label="绑定时间 : " />
+      <van-field :value="item.equiptment" readonly label="关联设备 : " />
       <van-field
         v-if="item.status == 0"
-        disabled
+        readonly
         value="初始化"
         label="设备状态 : "
       />
       <van-field
         v-else-if="item.status == 1"
         value="已激活"
-        disabled
+        readonly
         label="设备状态 : "
       />
       <van-field
         v-else-if="item.status == 2"
         value="已挂失"
-        disabled
+        readonly
         label="设备状态 : "
       />
       <van-field
         v-else-if="item.status == 3"
         value="已解绑"
-        disabled
+        readonly
         label="设备状态 : "
       />
-      <van-field v-else value="禁用" disabled label="设备状态 : " />
+      <van-field v-else value="禁用" readonly label="设备状态 : " />
       <van-button
         v-if="item.ismanage == 1"
         plain
@@ -127,6 +127,13 @@ export default {
       ]
     };
   },
+  mounted:function(){
+    let that = this;
+    this.$axios.get("/device/mydevicesearch/", {}).then(function(res) {
+      console.log(res.data.rows)
+      that.usergroup = res.data.rows
+    });
+  },
   methods: {
     unbind(id) {
       this.usergroup[0].status = 1
@@ -139,9 +146,13 @@ export default {
     devicetransfer() {},
     datatransfer() {},
     pcsurvey() {}
-  },
-  mounted:function(){
-    this.$refs.son.title = "保健用户列表"
   }
 };
 </script>
+<style lang="less" scoped>
+.healthmanager{
+  /deep/ .van-cell-group{
+    margin-bottom: 15px
+  }
+}
+</style>

@@ -22,6 +22,13 @@ vue-cli-plugin-axios（需要修改插件axios.js支持loading）
 vue-cli-plugin-cordova（命令行安装）
 $ npm install -g cordova （如果没安装cordova）
 
+安装cordova插件（在src-cordova目录下）
+cordova plugin add cordova-plugin-ble-central 蓝牙插件
+cordova plugin add cordova-plugin-splashscreen 启动屏幕插件
+cordova plugin add cordova-plugin-device 设备插件（获取设备信息，操作系统等）
+cordova plugin add cordova-sqlite-storage sqlite插件
+cordova plugin add cordova-plugin-qrscanner 二维码扫描插件
+
 编辑.eslintrc.js，去除变量未使用的报错
 rules中加入
    "no-unused-vars":"off",	  

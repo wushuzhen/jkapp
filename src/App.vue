@@ -1,7 +1,10 @@
 <template>
   <div id="app">
-    <router-view />
-    <bottom-bar v-show="true" />
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive"></router-view>
+    </keep-alive>
+    <router-view v-if="!$route.meta.keepAlive"></router-view>
+    <bottom-bar v-show="show" />
   </div>
 </template>
 
@@ -10,6 +13,18 @@ import BottomBar from "@/views/BottomBar";
 export default {
   components: {
     [BottomBar.name]: BottomBar
+  },
+
+  data() {
+    return {
+      show: false
+    };
+  },
+
+  watch: {
+    "$store.state.bottombar"() {
+      this.show = this.$store.state.bottombar;
+    }
   }
 };
 </script>

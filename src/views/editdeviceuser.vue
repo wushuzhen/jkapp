@@ -1,6 +1,6 @@
 <template>
   <div class="editdeviceuser">
-    <top-bar v-show="true" ref="son" />
+    <top-bar title="修改保健用户资料" />
 		<van-cell-group>
 			<van-field v-model="name" label="使用者名称 : " />
       <van-field v-model="phone" label="关联手机号 : " />
@@ -33,9 +33,6 @@ export default {
 			let id = this.$route.query.id
 			console.log(id)
 		}
-  },
-  mounted:function(){
-    this.$refs.son.title = "修改保健用户资料"
   }
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
   <div class="binddevice">
-    <top-bar v-show="true" ref="son" />
+    <top-bar title ="绑定设备" />
     <van-cell-group>
       <van-field v-model="device" label="设备编号 : " />
       <van-button plain type="primary" size="small" @click="submit"
@@ -30,10 +30,6 @@ export default {
       let id = this.$route.query.id;
       console.log(id);
     }
-	},
-	mounted:function(){
-    console.log(111111)
-    this.$refs.son.title = "绑定设备";
-  }
+	}
 };
 </script>

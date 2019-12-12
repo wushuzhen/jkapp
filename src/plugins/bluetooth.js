@@ -66,6 +66,11 @@ var _bluetooth = {
       return;
     }
 
+    if(typeof ble == "undefined"){
+      Vue.prototype.$toast("蓝牙没有准备好");
+      return;
+    }
+
     this.status("bluetooth: Scanning for Bluetooth Device");
 
     /*

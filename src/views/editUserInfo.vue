@@ -1,12 +1,13 @@
 <template>
   <div class="userinfo">
-    <top-bar v-show="true" ref="son" />
+    <top-bar title="修改管理员资料" />
     <van-cell-group>
       <van-field v-model="username" label="用户名 : " />
       <van-field label="性别 : " readonly="readonly" />
       <van-radio-group v-model="radio" class="lable">
-        <van-radio name="0">男</van-radio>
-        <van-radio name="1">女</van-radio>
+        <van-radio name="0">无</van-radio>
+        <van-radio name="1">男</van-radio>
+        <van-radio name="2">女</van-radio>
       </van-radio-group>
       <van-field v-model="date" label="出生年月日 : " @focus="picktime" />
       <van-field v-model="contact" label="联系地址 : " />
@@ -61,7 +62,7 @@ export default {
     [Button.name]: Button
   },
   data() {
-    var date = "2009-12-13";
+    let date = "2009-12-13";
     return {
       username: "wsz",
       radio: "0",
@@ -73,8 +74,30 @@ export default {
       contact: "广东省广州市黄埔区",
       location: "广东省广州市黄埔区",
       areaList: AreaList,
-      locationvalue: "711391"
+      locationvalue: "711391",
+      province: "",
+      city: "",
+      district: "",
+      id: 0
     };
+  },
+  mounted: function() {
+    let that = this;
+    this.$axios.get("cust/mdUserInfo/", {}).then(function(res) {
+      that.id = res.data.userinfo.id;
+      that.username = res.data.userinfo.name;
+      that.contact = res.data.userinfo.address;
+      that.date = res.data.userinfo.brithday;
+      that.radio = "" + res.data.userinfo.sex;
+      that.location =
+        res.data.userinfo.province +
+        res.data.userinfo.city +
+        res.data.userinfo.district;
+      that.currentDate = new Date(res.data.userinfo.brithday);
+      that.province = res.data.userinfo.province;
+      that.city = res.data.userinfo.city;
+      that.district = res.data.userinfo.district;
+    });
   },
   methods: {
     picktime() {
@@ -99,23 +122,49 @@ export default {
     confirm1(e) {
       this.show1 = false;
       this.location = e[0].name + e[1].name + e[2].name;
+      this.province = e[0].name;
+      this.city = e[1].name;
+      this.district = e[2].name;
     },
     cancel1() {
       this.show1 = false;
     },
     submit() {
-      var obj = {};
-      obj.username = this.username;
-      obj.sex = this.radio;
-      obj.date = this.date;
-      obj.contact = this.contact;
-      obj.location = this.locationvalue;
-      console.log(111111111);
-      console.log(obj);
+      let that = this;
+      this.getCsrfToken(this).then(function(token) {
+        that.$axios
+          .post(
+            "/cust/mdUserInfo/",
+            {
+              id: that.id,
+              name: that.username,
+              sex: that.radio,
+              brithday: that.date,
+              province: that.province,
+              city: that.city,
+              district: that.district,
+              address: that.contact
+            },
+            {
+              headers: { "X-CSRFToken": token }
+            }
+          )
+          .then(function(res) {
+            if (res.retcode === 0) {
+              that.$dialog.alert({
+                message: res.retmsg
+              });
+            } else if (res.retcode === 2) {
+              // that.$dialog.alert({
+              //   message: JSON.parse(res.data.form_error)
+              // });
+              // let error = JSON.parse(res.data.form_error)
+              console.log(JSON.parse(res.data.form_error))
+              console.log(res.retmsg)
+            }
+          });
+      });
     }
-  },
-  mounted:function(){
-    this.$refs.son.title = "修改管理员资料"
   }
 };
 </script>

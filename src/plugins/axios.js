@@ -67,6 +67,10 @@ _axios.interceptors.response.use(
             path: "/login"
           });
           location.reload();
+          break;
+        default:
+          Vue.prototype.$toast("网络错误: " + error);
+          break;
       }
     }
     return Promise.reject(error);
