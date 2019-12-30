@@ -34,7 +34,6 @@ export default {
         return false;
       } else {
         // this.$toast('token='+token);
-        var that = this; // 放置指针，便于then操作的获取
         this.$axios
           .post("/register/", { mobilephone: this.mobilephone, pwd: this.pwd })
           .then(

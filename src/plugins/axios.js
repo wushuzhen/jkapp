@@ -7,13 +7,16 @@ import qs from "qs";
 
 // Full config:  https://github.com/axios/axios#request-config
 let baseUrl =
-  process.env.NODE_ENV === "production" ? "https://192.168.31.150:8000" : "/api";
+  process.env.NODE_ENV === "production"
+    ? "https://192.168.31.150:8000"
+    : "/api";
 // axios.defaults.baseURL = process.env.baseURL || process.env.apiUrl || '';
 // axios.defaults.headers.common['Authorization'] = AUTH_TOKEN;
-// axios.defaults.headers.post['Content-Type'] = 'application/x-www-form-urlencoded';
+axios.defaults.headers.post["Content-Type"] =
+  "application/x-www-form-urlencoded";
 axios.defaults.withCredentials = true;
 axios.defaults.transformRequest = function(data) {
-  data = qs.stringify(data); //**转换Django能收取的数据格式**
+  data = qs.stringify(data, { indices: false }); //**转换Django能收取的数据格式**
   return data;
 };
 
@@ -33,6 +36,8 @@ let axiosSource; // 需要最新的链接的保存参数的地方
 
 _axios.interceptors.request.use(
   function(config) {
+    //Vue.$store.commit("setLoading", true);
+
     console.log("_axios.interceptors.request:" + config.url);
     let authInfo = {};
     let sessionid = localStorage.getItem("sessionid");
@@ -43,6 +48,7 @@ _axios.interceptors.request.use(
     return config;
   },
   function(error) {
+    //Vue.$store.commit("setLoading", false);
     Vue.prototype.$toast("网络发送错误，请重试");
     return Promise.reject(error);
   }
@@ -51,6 +57,7 @@ _axios.interceptors.request.use(
 // Add a response interceptor
 _axios.interceptors.response.use(
   function(response) {
+    //Vue.$store.commit("setLoading", false);
     console.log("_axios.interceptors.response data:" + response.data);
     let resp = JSON.parse(response.data);
     if (resp.data && resp.data.sessionid)
@@ -58,6 +65,7 @@ _axios.interceptors.response.use(
     return resp;
   },
   function(error) {
+    //Vue.$store.commit("setLoading", false);
     if (error.response) {
       switch (error.response.status) {
         case 401:
@@ -69,6 +77,7 @@ _axios.interceptors.response.use(
           location.reload();
           break;
         default:
+          console.log("网络错误: " + error);
           Vue.prototype.$toast("网络错误: " + error);
           break;
       }

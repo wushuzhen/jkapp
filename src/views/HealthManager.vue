@@ -2,10 +2,10 @@
   <div class="healthmanager">
     <top-bar title="保健用户列表" />
     <van-cell-group v-for="item of usergroup" :key="item.id">
-      <van-field :value="item.name" readonly label="使用者名称 : " />
-      <van-field :value="item.phone" readonly label="关联手机号 : " />
-      <van-field :value="item.bindtime" readonly label="绑定时间 : " />
-      <van-field :value="item.equiptment" readonly label="关联设备 : " />
+      <van-field :value="item.userName" readonly label="使用者名称 : " />
+      <van-field :value="item.mobilephone" readonly label="关联手机号 : " />
+      <van-field :value="item.bindTime" readonly label="绑定时间 : " />
+      <van-field :value="item.dev" readonly label="关联设备 : " />
       <van-field
         v-if="item.status == 0"
         readonly
@@ -32,15 +32,18 @@
       />
       <van-field v-else value="禁用" readonly label="设备状态 : " />
       <van-button
-        v-if="item.ismanage == 1"
+        v-if="item.ismanage == true"
         plain
         type="primary"
         size="small"
-        :to="{ path: '/editdeviceuser', query: { id: item.id } }"
+        :to="{
+          path: '/editdeviceuser',
+          query: { id: item.id, item: JSON.stringify(item) }
+        }"
         >修改</van-button
       >
       <van-button
-        v-if="item.ismanage == 1 && (item.status == 2 || item.status == 3)"
+        v-if="item.ismanage == true && (item.status == 2 || item.status == 3)"
         plain
         type="primary"
         size="small"
@@ -48,7 +51,7 @@
         >绑定</van-button
       >
       <van-button
-        v-if="item.ismanage == 1 && item.status == 1"
+        v-if="item.ismanage == true && item.status == 1"
         plain
         type="primary"
         size="small"
@@ -56,7 +59,7 @@
         >解除绑定</van-button
       >
       <van-button
-        v-if="item.ismanage == 1 && item.status == 1"
+        v-if="item.ismanage == true && item.status == 1"
         plain
         type="primary"
         size="small"
@@ -64,7 +67,7 @@
         >挂失</van-button
       >
       <van-button
-        v-if="item.ismanage == 1 && item.status == 1"
+        v-if="item.ismanage == true && item.status == 1"
         plain
         type="primary"
         size="small"
@@ -72,7 +75,7 @@
         >设备授权</van-button
       >
       <van-button
-        v-if="item.ismanage == 1 && item.status == 1"
+        v-if="item.ismanage == true && item.status == 1"
         plain
         type="primary"
         size="small"
@@ -80,7 +83,9 @@
         >数据授权</van-button
       >
       <van-button
-        v-if="item.ismanage == 1 && item.status != 4 && item.issurvey == 0"
+        v-if="
+          item.ismanage == true && item.status != 4 && item.issurvey == false
+        "
         plain
         type="primary"
         size="small"
@@ -103,56 +108,69 @@ export default {
   },
   data() {
     return {
-      usergroup: [
-        {
-          id: 1,
-          name: "wsj",
-          phone: 24634,
-          bindtime: "2019-4-5",
-          equiptment: "12",
-          issurvey: 0,
-          status: 2,
-          ismanage: 1
-        },
-        {
-          id: 2,
-          name: "ewiru",
-          phone: 6873543,
-          bindtime: "2019-6-6",
-          equiptment: "34",
-          issurvey: 1,
-          status: 1,
-          ismanage: 1
-        }
-      ]
+      usergroup: []
     };
   },
-  mounted:function(){
-    let that = this;
-    this.$axios.get("/device/mydevicesearch/", {}).then(function(res) {
-      console.log(res.data.rows)
-      that.usergroup = res.data.rows
-    });
+  mounted: function() {
+    this.$axios.get("/device/mydevicesearch/", {}).then(
+      function(res) {
+        this.usergroup = res.data.rows;
+      }.bind(this)
+    );
   },
   methods: {
     unbind(id) {
-      this.usergroup[0].status = 1
-      console.log(this)
-      console.log(id)
+      this.getCsrfToken(this).then(
+        function(token) {
+          this.$axios
+            .post(
+              "/device/unbind/",
+              { id: id },
+              {
+                headers: { "X-CSRFToken": token }
+              }
+            )
+            .then(
+              function(res) {
+                this.$dialog.alert({
+                  message: res.retmsg
+                });
+                this.$router.go(0);
+              }.bind(this)
+            );
+        }.bind(this)
+      );
     },
     reportloss(id) {
-      console.log(id)
+      this.getCsrfToken(this).then(
+        function(token) {
+          this.$axios
+            .post(
+              "/device/reportloss/",
+              { id: id },
+              {
+                headers: { "X-CSRFToken": token }
+              }
+            )
+            .then(
+              function(res) {
+                this.$dialog.alert({
+                  message: res.retmsg
+                });
+                this.$router.go(0);
+              }.bind(this)
+            );
+        }.bind(this)
+      );
     },
-    devicetransfer() {},
-    datatransfer() {},
     pcsurvey() {}
   }
 };
 </script>
 <style lang="less" scoped>
-.healthmanager{
-  /deep/ .van-cell-group{
-    margin-bottom: 15px
+.healthmanager {
+  /deep/ .van-cell-group {
+    margin-bottom: 15px;
   }
 }
 </style>

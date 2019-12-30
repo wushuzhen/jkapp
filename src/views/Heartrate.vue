@@ -80,7 +80,10 @@ export default {
         xAxis: {
           type: "category",
           boundaryGap: false,
-          data: []
+          data: [],
+          axisLabel: {
+            interval: 0
+          }
         },
         yAxis: {
           type: "value"
@@ -90,7 +93,6 @@ export default {
             name: "心率",
             type: "line",
             smooth: true,
-            stack: "总量",
             data: []
           }
         ]
@@ -136,29 +138,45 @@ export default {
       this.show1 = false;
     },
     submit() {
-      let xdata = this.option.xAxis.data;
-			let ydata = this.option.series[0].data;
-			let data = [
-				{
-					recordTime:"1221",
-					flag:0,
-					val:92
-				},
-				{
-					recordTime:"2112",
-					flag:1,
-					val:98
-				}
-			]
-      for (var i = 0; i < data.length; i++) {
-        if (data[i].flag == 0) {
-          xdata.push(data[i].recordTime);
-        } else {
-          xdata.push(data[i].recordTime + "(运动)");
-        }
-        ydata.push(data[i].val);
-			}
-			this.showinfo()
+      this.getCsrfToken().then(
+        function(token) {
+          this.$axios
+            .post(
+              "/health/0/hb_query/",
+              {
+                start: this.start,
+                end: this.end,
+                devuserid: localStorage.getItem("currUser")
+              },
+              {
+                headers: { "X-CSRFToken": token }
+              }
+            )
+            .then(
+              function(res) {
+                let xdata = this.option.xAxis.data;
+                let ydata = this.option.series[0].data;
+                let data = res.data.data;
+                if (data.length > 0) {
+                  for (var i = 0; i < data.length; i++) {
+                    if (data[i].flag == 0) {
+                      xdata.push(data[i].recordTime);
+                    } else {
+                      xdata.push(data[i].recordTime + "(运动)");
+                    }
+                    ydata.push(data[i].val);
+                  }
+                  console.log(this.option);
+                  this.showinfo();
+                } else {
+                  this.$dialog.alert({
+                    message: "查询无数据"
+                  });
+                }
+              }.bind(this)
+            );
+        }.bind(this)
+      );
     }
   }
 };

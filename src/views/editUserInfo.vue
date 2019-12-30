@@ -82,22 +82,21 @@ export default {
     };
   },
   mounted: function() {
-    let that = this;
     this.$axios.get("cust/mdUserInfo/", {}).then(function(res) {
-      that.id = res.data.userinfo.id;
-      that.username = res.data.userinfo.name;
-      that.contact = res.data.userinfo.address;
-      that.date = res.data.userinfo.brithday;
-      that.radio = "" + res.data.userinfo.sex;
-      that.location =
+      this.id = res.data.userinfo.id;
+      this.username = res.data.userinfo.name;
+      this.contact = res.data.userinfo.address;
+      this.date = res.data.userinfo.brithday;
+      this.radio = "" + res.data.userinfo.sex;
+      this.location =
         res.data.userinfo.province +
         res.data.userinfo.city +
         res.data.userinfo.district;
-      that.currentDate = new Date(res.data.userinfo.brithday);
-      that.province = res.data.userinfo.province;
-      that.city = res.data.userinfo.city;
-      that.district = res.data.userinfo.district;
-    });
+      this.currentDate = new Date(res.data.userinfo.brithday);
+      this.province = res.data.userinfo.province;
+      this.city = res.data.userinfo.city;
+      this.district = res.data.userinfo.district;
+    }.bind(this));
   },
   methods: {
     picktime() {
@@ -130,20 +129,19 @@ export default {
       this.show1 = false;
     },
     submit() {
-      let that = this;
-      this.getCsrfToken(this).then(function(token) {
-        that.$axios
+      this.getCsrfToken().then(function(token) {
+        this.$axios
           .post(
             "/cust/mdUserInfo/",
             {
-              id: that.id,
-              name: that.username,
-              sex: that.radio,
-              brithday: that.date,
-              province: that.province,
-              city: that.city,
-              district: that.district,
-              address: that.contact
+              id: this.id,
+              name: this.username,
+              sex: this.radio,
+              brithday: this.date,
+              province: this.province,
+              city: this.city,
+              district: this.district,
+              address: this.contact
             },
             {
               headers: { "X-CSRFToken": token }
@@ -151,19 +149,19 @@ export default {
           )
           .then(function(res) {
             if (res.retcode === 0) {
-              that.$dialog.alert({
+              this.$dialog.alert({
                 message: res.retmsg
               });
             } else if (res.retcode === 2) {
-              // that.$dialog.alert({
+              // this.$dialog.alert({
               //   message: JSON.parse(res.data.form_error)
               // });
               // let error = JSON.parse(res.data.form_error)
               console.log(JSON.parse(res.data.form_error))
               console.log(res.retmsg)
             }
-          });
-      });
+          }.bind(this));
+      }.bind(this));
     }
   }
 };

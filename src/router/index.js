@@ -117,7 +117,20 @@ const routes = [
   {
     path: "/contactInfo",
     component: () => import("../views/ContactInfo.vue")
-  }
+  },
+  {
+    path: "/alarm",
+    component: () => import("../views/AlarmList.vue"),
+    meta: { keepAlive: true }
+  },
+  {
+    path: "/alarmInfo",
+    component: () => import("../views/AlarmInfo.vue")
+  },
+  {
+    path: "/location",
+    component: () => import("../views/Location.vue")
+  }   
 ];
 
 const router = new VueRouter({

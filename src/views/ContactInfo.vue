@@ -36,6 +36,8 @@
         left-icon="phone"
         :readonly="!editState"
       />
+      <van-field v-model="item.notes" label="备注" rows="3" :readonly="!editState" />
+      <form-error :response="formResponse" />
     </van-cell-group>
   </div>
 </template>
@@ -43,27 +45,30 @@
 <script>
 import TopBar from "@/views/TopBar";
 import { CellGroup, Field, Dialog } from "vant";
+import FormError from "@/views/FormError";
+
 export default {
   components: {
     [TopBar.name]: TopBar,
     [CellGroup.name]: CellGroup,
-    [Field.name]: Field
+    [Field.name]: Field,
+    [FormError.name]: FormError
   },
 
   mounted() {
-    this.editState = this.$route.query.id == 0;
+    this.editState = this.$store.state.urlData.id == 0;
     this.updateState();
   },
 
   data() {
     return {
-      id: this.$route.query.id,
-      item: JSON.parse(this.$route.query.item),
-      active: 0,
+      id: this.$store.state.urlData.id,
+      item: this.$store.state.urlData.item,
       editState: false,
       title: "",
       leftText: "",
-      rightText: ""
+      rightText: "",
+      formResponse:{}
     };
   },
   methods: {
@@ -78,7 +83,7 @@ export default {
 
     updateState() {
       if (this.editState) {
-        this.title = this.$route.query.id == 0 ? "新增联系人" : "编辑联系人";
+        this.title = this.$store.state.urlData.id == 0 ? "新增联系人" : "编辑联系人";
         this.leftText = "取消";
         this.rightText = "保存";
       } else {
@@ -89,31 +94,10 @@ export default {
     },
 
     saveRecord() {
-      let that = this;
-      this.getCsrfToken(this)
-        .then(function(token) {
-          that.httpSave(token);
-        })
-        .catch(() => {});
-    },
-
-    onDeleteRecord() {
-      if (this.id == 0) {
-        //新增记录，直接返回
-        this.$router.replace({ path: "/contact", meta: { keepAlive: true } });
-        return;
-      }
-      Dialog.confirm({
-        message: "确认删除联系人" + this.item.name + "吗?"
-      })
+      this.getCsrfToken()
         .then(
-          function() {
-            let that = this;
-            this.getCsrfToken(this)
-              .then(function(token) {
-                that.httpDelete(token);
-              })
-              .catch(() => {});
+          function(token) {
+            this.httpSave(token);
           }.bind(this)
         )
         .catch(() => {});
@@ -149,38 +133,13 @@ export default {
               this.$toast(response.retmsg);
               this.$store.commit("setContactRefresh", true);
               this.$router.go(-1);
-            } else if (retcode == 1)
+            } else if (retcode == 1) {
               //错误
               this.$toast(response.retmsg);
-          }.bind(this)
-        )
-        .catch(function(error) {
-          console.log("请求失败" + error);
-        });
-    },
-
-    httpDelete(token) {
-      this.$axios
-        .post(
-          "maillist/delmaillist/",
-          {
-            id: this.id
-          },
-          {
-            headers: { "X-CSRFToken": token }
-          }
-        )
-        .then(
-          function(response) {
-            let retcode = response.retcode;
-            if (retcode == 0) {
-              //成功
-              this.$toast(response.retmsg);
-              this.$store.commit("setContactRefresh", true);
-              this.$router.go(-1);
-            } else if (retcode == 1)
-              //错误
-              this.$toast(response.retmsg);
+            } else if (retcode == 2) {
+              //提交后端Form输入校验错误
+              this.formResponse = response;
+            }
           }.bind(this)
         )
         .catch(function(error) {

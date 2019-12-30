@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    <van-loading v-show="loading" />
     <keep-alive>
       <router-view v-if="$route.meta.keepAlive"></router-view>
     </keep-alive>
@@ -7,18 +8,26 @@
     <bottom-bar v-show="show" />
   </div>
 </template>
-
+<script src="">
+</script>
 <script>
+import { mapState } from "vuex";
 import BottomBar from "@/views/BottomBar";
+import { Loading } from "vant";
 export default {
   components: {
-    [BottomBar.name]: BottomBar
+    [BottomBar.name]: BottomBar,
+    [Loading.name]: Loading
   },
 
   data() {
     return {
       show: false
     };
+  },
+
+  computed: {
+    ...mapState(["loading"])
   },
 
   watch: {
@@ -40,7 +49,8 @@ export default {
   font-size: 14px;
   width: 100%;
   height: 100%;
-  position: fixed;
+  // position: fixed;
   z-index: 999;
+  margin-bottom: 52px;
 }
 </style>

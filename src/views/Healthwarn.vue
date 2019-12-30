@@ -3,10 +3,10 @@
     <top-bar title="健康预警信息页" />
     <van-cell-group v-for="item of usergroup" :key="item.id">
       <van-field :value="item.name" readonly label="保健用户 : " />
-      <van-field :value="item.warntime" readonly label="告警时间 : " />
+      <van-field :value="item.recordTime" readonly label="告警时间 : " />
       <van-field :value="item.datatype" readonly label="健康数据类型 : " />
       <van-field :value="item.warntype" readonly label="预警类型 : " />
-      <van-field :value="item.warn" readonly label="预警信息说明 : " />
+      <van-field :value="item.warntext" readonly label="预警信息说明 : " />
     </van-cell-group>
   </div>
 </template>
@@ -28,24 +28,19 @@ export default {
   },
   methods: {},
   mounted: function() {
-    this.usergroup = [
-      {
-        id: 1,
-        name: "wsj",
-        warntime: "2019-1-2 10:48:23",
-        datatype: "心率",
-        warntype: "单次过高",
-        warn: "心率过高(108>100)"
-      },
-      {
-        id: 2,
-        name: "ewiru",
-        warntime: "2019-1-2 10:48:23",
-        datatype: "心率",
-        warntype: "单次过高",
-        warn: "心率过高(108>100)"
-      }
-    ];
+    this.$axios
+      .get(
+        "/health/ht_query/?devuserid=" + localStorage.getItem("currUser"),
+        {
+          devuserid: localStorage.getItem("currUser")
+        }
+      )
+      .then(
+        function(res) {
+          console.log(res)
+          this.usergroup = res.data.rows
+        }.bind(this)
+      );
   }
 };
 </script>

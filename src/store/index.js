@@ -8,15 +8,21 @@ const CancelToken = axios.CancelToken;
 
 export default new Vuex.Store({
   state: {
+    loading: false,
     deviceready: false,
     source: CancelToken.source(),
-    currUser: 0,
+    currUser: 0, //当前保健用户
     userList: [],
     bottombar: false, //是否显示底部按钮条
-    qrcode:"",
-    contactRefresh:false //是否刷新联系人列表
+    qrcode: "",
+    contactRefresh: false, //是否刷新联系人列表
+    alarmRefresh: false, //是否刷新事务提醒列表
+    urlData: {} //页面跳转传递的数据
   },
   mutations: {
+    setLoading(state, arg) {
+      state.loading = arg;
+    },
     setBottombar(state, arg) {
       state.bottombar = arg;
     },
@@ -39,11 +45,17 @@ export default new Vuex.Store({
     setUserList(state, arg) {
       state.userList = arg;
     },
-    setQrcode(state, arg){
+    setQrcode(state, arg) {
       state.qrcode = arg;
     },
-    setContactRefresh(state, arg){
+    setContactRefresh(state, arg) {
       state.contactRefresh = arg;
+    },
+    setAlarmRefresh(state, arg) {
+      state.alarmRefresh = arg;
+    },
+    setUrlData(state, arg) {
+      state.urlData = Vue.prototype.deepCopy(arg); //深拷贝
     }
   },
   actions: {},

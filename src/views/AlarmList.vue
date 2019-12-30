@@ -1,6 +1,6 @@
 <template>
   <div>
-    <top-bar title="联系人" :click-right="onClickTopRight" />
+    <top-bar title="事务提醒" :click-right="onClickTopRight" />
     <van-search
       class="search-input"
       placeholder="请输入搜索关键词"
@@ -8,22 +8,25 @@
       @search="onSearch"
     />
     <van-list
-      class="contact-list"
+      class="alarm-list"
       v-model="loading"
       :finished="finished"
       finished-text="没有更多了"
       @load="onLoadList"
     >
       <van-swipe-cell :on-close="onCellClose" v-for="item in list" :name="item.id" :key="item.id">
-        <van-cell :title="item.name" clickable :id="item.id" @click="onClickList" />
-        <template slot="right">
+        <van-cell :title="item.title" clickable :id="item.id" @click="onClickList" />
+          <template slot="left">
+            <van-button square type="primary" :text="item.status==1?'停用':'启用'" />
+          </template>
+          <template slot="right">
           <van-button square type="danger" text="删除" />
         </template>
       </van-swipe-cell>
     </van-list>
     <van-tabbar class="function-bar" v-model="active">
       <van-tabbar-item icon="plus" @click="onNewRecord">新增</van-tabbar-item>
-      <van-tabbar-item icon="upgrade" @click="onSyncRecords">同步通讯录</van-tabbar-item>
+      <van-tabbar-item icon="upgrade" @click="onSyncRecords">同步事务提醒</van-tabbar-item>
       <van-tabbar-item icon="replay" @click="onRefreshList">刷新</van-tabbar-item>
     </van-tabbar>
   </div>
@@ -65,13 +68,10 @@ export default {
   },
 
   activated() {
-    console.log(
-      "contactlist activated refresh:" + this.$store.state.contactRefresh
-    );
     //缓存页面激活
-    if (this.$store.state.contactRefresh) {
+    if (this.$store.state.alarmRefresh) {
       this.onRefreshList();
-      this.$store.commit("setContactRefresh", false);
+      this.$store.commit("setAlarmRefresh", false);
     }
   },
 
@@ -98,7 +98,7 @@ export default {
       if (curUser == 0) return;
 
       this.$axios
-        .post("maillist/maillistsearch/", {
+        .post("warn/plane/planesearch/", {
           id: curUser,
           name: this.searchText,
           query_params: '{ "offset": {0}, "limit": {1} }'.format(
@@ -146,7 +146,7 @@ export default {
       if (item) {
         this.$store.commit("setUrlData", { id: id, item: item });
         this.$router.push({
-          path: "/contactInfo"
+          path: "/alarmInfo"
         });
       }
     },
@@ -155,19 +155,21 @@ export default {
       console.log("onNewRecord");
       this.$store.commit("setUrlData", { id: 0, item: {} });
       this.$router.push({
-        path: "/contactInfo"
+        path: "/alarmInfo"
       });
     },
 
     onCellClose(clickPosition, instance) {
       switch (clickPosition) {
         case "left":
+          this.startOrStopAlarm(instance.name);
+          instance.close();
+          break;
         case "cell":
         case "outside":
           instance.close();
           break;
         case "right":
-          console.log(instance.name);
           Dialog.confirm({
             message: "确定删除吗？"
           })
@@ -178,6 +180,51 @@ export default {
           instance.close();
           break;
       }
+    },
+
+    startOrStopAlarm(id){
+      let item = this.getItem(id);
+      let url;
+      if(item.status == 1){
+        url ="warn/plane/stopping/";
+      }else{
+        url ="warn/plane/opening/";
+      }
+      this.getCsrfToken()
+        .then(
+          function(token) {
+            this.httpStartOrStop(token, url, id);
+          }.bind(this)
+        )
+        .catch(() => {});  
+    },
+
+    httpStartOrStop(token, url, id){
+      this.$axios
+        .post(
+          url,
+          {
+            id: id
+          },
+          {
+            headers: { "X-CSRFToken": token }
+          }
+        )
+        .then(
+          function(response) {
+            let retcode = response.retcode;
+            if (retcode == 0) {
+              //成功
+              this.$toast(response.retmsg);
+              this.onRefreshList();
+            } else if (retcode == 1)
+              //错误
+              this.$toast(response.retmsg);
+          }.bind(this)
+        )
+        .catch(function(error) {
+          console.log("请求失败" + error);
+        });    
     },
 
     deleteRecord(id) {
@@ -193,7 +240,7 @@ export default {
     httpDelete(id, token) {
       this.$axios
         .post(
-          "maillist/delmaillist/",
+          "warn/plane/delplane/",
           {
             id: id
           },
@@ -240,7 +287,7 @@ export default {
 
       this.$axios
         .post(
-          "maillist/synmaillist/",
+          "warn/plane/synplane/",
           {
             id: id
           },

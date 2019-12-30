@@ -37,12 +37,59 @@ export default {
   },
   methods: {
     getcode() {
-      console.log(11111111);
+      let reg = /^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8]|8[0-9]|9[1,8,9])\d{8}$/;
+      if (reg.test(this.phone)) {
+        this.getCsrfToken().then(
+          function(token) {
+            this.$axios
+              .post(
+                "/device/sendSmsCode/",
+                {
+                  mobile: this.phone
+                },
+                {
+                  headers: { "X-CSRFToken": token }
+                }
+              )
+              .then(
+                function(res) {
+                  this.$dialog.alert({
+                    message: res.retmsg
+                  });
+                }.bind(this)
+              );
+          }.bind(this)
+        );
+      } else {
+        this.$dialog.alert({
+          message: "请输入正确的手机号码！"
+        });
+      }
     },
     submit() {
-      console.log(22222222);
-      let id = localStorage.getItem("currUser");
-      console.log(id);
+      this.getCsrfToken().then(
+        function(token) {
+          this.$axios
+            .post(
+              "/device/Datatransfer/",
+              {
+                id:this.$route.query.id,
+                mobilephone: this.phone,
+                validatecode:this.code
+              },
+              {
+                headers: { "X-CSRFToken": token }
+              }
+            )
+            .then(
+              function(res) {
+                this.$dialog.alert({
+                  message: res.retmsg
+                });
+              }.bind(this)
+            );
+        }.bind(this)
+      );
     }
   }
 };

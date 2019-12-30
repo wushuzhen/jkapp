@@ -37,10 +37,9 @@ export default {
   methods: {
     submit() {
       if (this.newpw == this.confirmpw) {
-        let that = this;
-        this.getCsrfToken(this).then(function(token) {
-          that.submitpd(token);
-        });
+        this.getCsrfToken().then(function(token) {
+          this.submitpd(token);
+        }.bind(this));
       } else {
         this.$dialog.alert({
           message: "新密码前后不一致，请重新确认！"

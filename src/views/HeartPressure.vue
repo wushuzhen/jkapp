@@ -80,7 +80,10 @@ export default {
         xAxis: {
           type: "category",
           boundaryGap: false,
-          data: []
+          data: [],
+          axisLabel: {
+            interval: 0
+          }
         },
         yAxis: {
           type: "value"
@@ -141,27 +144,42 @@ export default {
       this.show1 = false;
     },
     submit() {
-      let xdata = this.option.xAxis.data;
-      let ygdata = this.option.series[0].data;
-			let yddata = this.option.series[1].data;
-			let data = [
-				{
-					recordTime:"3532",
-					maxval:129,
-					minval:86
-				},
-				{
-					recordTime:"erwe",
-					maxval:135,
-					minval:95
-				}
-			]
-      for (var i = 0; i < data.length; i++) {
-        xdata.push(data[i].recordTime);
-        ygdata.push(data[i].maxval);
-        yddata.push(data[i].minval);
-      }
-      this.showinfo();
+      this.getCsrfToken().then(
+        function(token) {
+          this.$axios
+            .post(
+              "/health/0/bp_query/",
+              {
+                start: this.start,
+                end: this.end,
+                devuserid: localStorage.getItem("currUser")
+              },
+              {
+                headers: { "X-CSRFToken": token }
+              }
+            )
+            .then(
+              function(res) {
+                let xdata = this.option.xAxis.data;
+                let ygdata = this.option.series[0].data;
+                let yddata = this.option.series[1].data;
+                let data = res.data.data;
+                if (data.length > 0) {
+                  for (var i = 0; i < data.length; i++) {
+                    xdata.push(data[i].recordTime);
+                    ygdata.push(data[i].maxval);
+                    yddata.push(data[i].minval);
+                  }
+                  this.showinfo();
+                } else {
+                  this.$dialog.alert({
+                    message: "查询无数据"
+                  });
+                }
+              }.bind(this)
+            );
+        }.bind(this)
+      );
     }
   }
 };

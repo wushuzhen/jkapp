@@ -80,7 +80,10 @@ export default {
         xAxis: {
           type: "category",
           boundaryGap: false,
-          data: []
+          data: [],
+          axisLabel: {
+            interval: 0
+          }
         },
         yAxis: {
           type: "value"
@@ -136,23 +139,40 @@ export default {
       this.show1 = false;
     },
     submit() {
-      let xdata = this.option.xAxis.data;
-			let ydata = this.option.series[0].data;
-			let data = [
-				{
-					recordTime:"sdf",
-					val:124
-				},
-				{
-					recordTime:"we",
-					val:54
-				}
-			]
-      for (var i = 0; i < data.length; i++) {
-        xdata.push(data[i].recordTime);
-        ydata.push(data[i].val);
-      }
-      this.showinfo();
+      this.getCsrfToken().then(
+        function(token) {
+          this.$axios
+            .post(
+              "/health/0/bs_query/",
+              {
+                start: this.start,
+                end: this.end,
+                devuserid: localStorage.getItem("currUser")
+              },
+              {
+                headers: { "X-CSRFToken": token }
+              }
+            )
+            .then(
+              function(res) {
+                let xdata = this.option.xAxis.data;
+                let ydata = this.option.series[0].data;
+                let data = res.data.data;
+                if (data.length > 0) {
+                  for (var i = 0; i < data.length; i++) {
+                    xdata.push(data[i].recordTime);
+                    ydata.push(data[i].val);
+                  }
+                  this.showinfo();
+                } else {
+                  this.$dialog.alert({
+                    message: "查询无数据"
+                  });
+                }
+              }.bind(this)
+            );
+        }.bind(this)
+      );
     }
   }
 };

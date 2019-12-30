@@ -37,10 +37,9 @@ export default {
   },
   methods: {
     getcodeor() {
-      let that = this;
-      this.getCsrfToken(this).then(function(token) {
-        that.getcode(token);
-      });
+      this.getCsrfToken().then(function(token) {
+        this.getcode(token);
+      }.bind(this));
     },
     getcode(token) {
       let reg = /^1(3[0-9]|4[5,7]|5[0,1,2,3,5,6,7,8,9]|6[2,5,6,7]|7[0,1,7,8]|8[0-9]|9[1,8,9])\d{8}$/;
@@ -71,14 +70,13 @@ export default {
       }
     },
     submit() {
-      let that = this;
-      this.getCsrfToken(this).then(function(token) {
-        that.$axios
+      this.getCsrfToken().then(function(token) {
+        this.$axios
           .post(
             "/changephone/",
             {
-              mobilephone: that.phone,
-              validatecode: that.code
+              mobilephone: this.phone,
+              validatecode: this.code
             },
             {
               headers: { "X-CSRFToken": token }
@@ -86,16 +84,16 @@ export default {
           )
           .then(function(res) {
             if (res.retcode === 0) {
-              that.$dialog.alert({
+              this.$dialog.alert({
                 message: res.retmsg
               });
             } else {
-              that.$dialog.alert({
+              this.$dialog.alert({
                 message: "出现了一个错误！"
               });
             }
           });
-      });
+      }.bind(this));
     }
   }
 };

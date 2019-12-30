@@ -2,8 +2,10 @@
   <div>
     <van-tabbar v-model="active">
       <van-tabbar-item icon="home" to="/home">首页</van-tabbar-item>
-      <van-tabbar-item icon="cart" to="/message">消息</van-tabbar-item>
-      <van-tabbar-item icon="contact" to="/admin">管理中心</van-tabbar-item>
+      <van-tabbar-item icon="cart" to="/message">提醒</van-tabbar-item>
+      <van-tabbar-item icon="contact" to="/admin">告警</van-tabbar-item>
+      <van-tabbar-item icon="contact" to="/admin">商城</van-tabbar-item>
+      <van-tabbar-item icon="contact" to="/admin">我</van-tabbar-item>
       <van-dropdown-menu id="user" direction="up">
         <van-dropdown-item v-model="currUser" :options="userOptions" />
       </van-dropdown-menu>

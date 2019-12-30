@@ -11,8 +11,17 @@ import { Toast } from "vant";
 import qs from "qs";
 import echarts from 'echarts';
 import { Dialog } from 'vant';
+import VueAMap from 'vue-amap';
 
 Vue.prototype.$echarts = echarts;
+
+Vue.use(VueAMap);
+VueAMap.initAMapApiLoader({
+  key: 'a8c1d4e6a73d80b7857ff4fe85474f61',
+  plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor'],
+  // 默认高德 sdk 版本为 1.4.4
+  v: '1.4.4'
+});
 
 Vue.use(Toast);
 Vue.use(utils);
